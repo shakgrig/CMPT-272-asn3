@@ -1,0 +1,7 @@
+node_modules
+dist
+build
+class_example_files
+package-lock.json
+*.html
+*.css
