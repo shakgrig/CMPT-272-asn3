@@ -246,30 +246,34 @@ export class UI {
         const roundedProtein = Math.round(protein * 10) / 10;
         const roundedCarbs = Math.round(carbs * 10) / 10;
         const roundedFat = Math.round(fat * 10) / 10;
-        const fatPercent = Math.round((fat / 78) * 100);
-        const carbsPercent = Math.round((carbs / 275) * 100);
-        const proteinPercent = Math.round((protein / 50) * 100);
+        const fatPercent = Math.round((fat / 75) * 100);
+        const carbsPercent = Math.round((carbs / 300) * 100);
 
-        modalTitle.textContent = `${recipe.name} Nutrition Facts`;
+        modalTitle.textContent = `${recipe.name}`;
         modalBody.innerHTML = `
           <div class="nutrition-label">
-            <div class="nf-title">Nutrition Facts</div>
-            <div class="nf-serving">Recipe: ${recipe.name}</div>
-            <div class="nf-serving">Total recipe weight: ${totalGrams.toFixed(0)} g</div>
-            <div class="nf-serving nf-thick-line">Servings per recipe: 1</div>
-
-            <div class="nf-amount">Amount Per Serving</div>
+            <h1 class="nf-title-line"><strong>Nutrition Facts</strong></h1>
+            <h1 class="nf-title-line"><strong>Valeur nutritive</strong></h1>
+            <div class="nf-serving">Per 1 serving (${totalGrams.toFixed(0)} g)</div>
+            <div class="nf-serving">pour 1 portion (${totalGrams.toFixed(0)} g)</div>
+            <hr>
+            <div class="nf-serving nf-serving-border">pour 1 portion (${totalGrams.toFixed(0)} g)</div>
             <div class="nf-calories-row">
-              <span>Calories</span>
-              <span>${roundedCalories}</span>
+              <div class="nf-cal-left"><strong>Calories</strong> ${roundedCalories}</div>
+              <div class="nf-dv-header">% Daily Value*<br>% valeur quotidienne*</div>
             </div>
-
-            <div class="nf-dv-header">% Daily Value*</div>
-            <div class="nf-row"><span><strong>Total Fat</strong> ${roundedFat}g</span><span><strong>${fatPercent}%</strong></span></div>
-            <div class="nf-row"><span><strong>Total Carbohydrate</strong> ${roundedCarbs}g</span><span><strong>${carbsPercent}%</strong></span></div>
-            <div class="nf-row nf-thin-line"><span><strong>Protein</strong> ${roundedProtein}g</span><span><strong>${proteinPercent}%</strong></span></div>
-
-            <div class="nf-footnote">* Percent Daily Values are based on a 2,000 calorie diet.</div>
+            <div class="nf-nutrient">
+              <div><strong>Fat / Lipides</strong> ${roundedFat} g</div>
+              <div class="nf-percent"><strong>${fatPercent} %</strong></div>
+            </div>
+            <div class="nf-nutrient">
+              <div><strong>Carbohydrate / Glucides</strong> ${roundedCarbs} g</div>
+              <div class="nf-percent"><strong>${carbsPercent} %</strong></div>
+            </div>
+            <div class="nf-nutrient nf-protein-border">
+              <div><strong>Protein / Protéines</strong> ${roundedProtein} g</div>
+            </div>
+            <div class="nf-footer">* 5% or less is a little, 15% or more is a lot<br>* 5 % ou moins c'est peu, 15 % ou plus c'est beaucoup</div>
           </div>
         `;
       })

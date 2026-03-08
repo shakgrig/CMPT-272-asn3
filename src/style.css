@@ -16,69 +16,87 @@ table input[type='number'] {
   min-width: 6.5rem;
 }
 
+/* Canadian Nutrition Facts Table */
 .nutrition-label {
   background: #fff;
-  border: 2px solid #111;
-  color: #111;
-  font-family: Arial, Helvetica, sans-serif;
-  max-width: 360px;
+  border: 1pt solid #000;
+  color: #000;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  max-width: 280px;
   margin-inline: auto;
-  padding: 0.65rem;
+  padding: 3pt;
+  box-sizing: border-box;
+  font-size: 8pt;
+  line-height: 1.3;
 }
 
-.nf-title {
-  font-size: 1.7rem;
-  font-weight: 800;
-  line-height: 1;
-  border-bottom: 8px solid #111;
-  padding-bottom: 0.2rem;
-  margin-bottom: 0.35rem;
+.nf-title-line {
+  font-size: 13pt;
+  line-height: 1.1;
+  padding: 0;
+  margin: 0;
 }
 
-.nf-serving,
-.nf-amount,
-.nf-footnote {
-  font-size: 0.82rem;
+.nf-title-border {
+  border-bottom: 8pt solid #000;
+  padding-bottom: 1pt;
+  margin-bottom: 2pt;
 }
 
-.nf-thick-line {
-  border-bottom: 5px solid #111;
-  margin-bottom: 0.3rem;
-  padding-bottom: 0.3rem;
+.nf-serving {
+  font-size: 8pt;
+  line-height: 1.2;
+  margin: 0;
+  padding: 0;
+}
+
+.nf-serving-border {
+  border-bottom: 8pt solid #000;
+  padding-bottom: 2pt;
+  margin-bottom: 2pt;
 }
 
 .nf-calories-row {
-  border-bottom: 5px solid #111;
   display: flex;
   justify-content: space-between;
-  font-size: 1.35rem;
-  font-weight: 700;
-  line-height: 1.1;
-  margin-bottom: 0.25rem;
-  padding-bottom: 0.25rem;
+  align-items: flex-start;
+  border-bottom: 10pt solid #000;
+  padding-bottom: 1pt;
+  margin-bottom: 1pt;
+}
+
+.nf-cal-left {
+  font-size: 10pt;
+  font-weight: bold;
 }
 
 .nf-dv-header {
-  border-bottom: 1px solid #111;
-  font-size: 0.72rem;
-  font-weight: 700;
-  margin-bottom: 0.1rem;
+  font-size: 6.5pt;
+  font-weight: normal;
   text-align: right;
+  line-height: 1.1;
 }
 
-.nf-row {
-  border-bottom: 1px solid #111;
+.nf-nutrient {
   display: flex;
-  font-size: 0.85rem;
   justify-content: space-between;
-  padding: 0.13rem 0;
+  border-bottom: 1pt solid #000;
+  padding: 1pt 0;
+  font-size: 8pt;
 }
 
-.nf-thin-line {
-  margin-bottom: 0.3rem;
+.nf-percent {
+  text-align: right;
+  min-width: 35pt;
 }
 
-.nf-footnote {
-  border-top: 3px solid #111;
-  padding-top: 0.25rem;
+.nf-protein-border {
+  border-bottom: 5pt solid #000;
+  margin-bottom: 3pt;
+}
+
+.nf-footer {
+  font-size: 7pt;
+  padding-top: 2pt;
+  color: #666;
 }
