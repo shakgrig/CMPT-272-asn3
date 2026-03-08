@@ -3,8 +3,7 @@ import { RecipeService } from './recipeService';
 import { StorageService } from './storageService';
 import { UI } from './ui';
 
-const rootElement = document.querySelector<HTMLDivElement>('#app');
-
+const rootElement = document.querySelector<HTMLElement>('#app');
 if (!rootElement) {
   throw new Error('Missing #app root element.');
 }

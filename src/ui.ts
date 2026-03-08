@@ -4,18 +4,17 @@ import { StorageService } from './storageService';
 import { VegetarianRecipe } from './recipe';
 
 export class UI {
-  private readonly rootElement: HTMLDivElement;
+  private readonly rootElement: HTMLElement;
   private readonly recipeService: RecipeService;
   private readonly storageService: StorageService;
 
-  constructor(rootElement: HTMLDivElement, recipeService: RecipeService, storageService: StorageService) {
+  constructor(rootElement: HTMLElement, recipeService: RecipeService, storageService: StorageService) {
     this.rootElement = rootElement;
     this.recipeService = recipeService;
     this.storageService = storageService;
   }
 
   init(): void {
-    this.renderLayout();
     this.renderPantry();
     this.renderRecipe();
     this.bindEvents();
@@ -166,75 +165,6 @@ export class UI {
       });
   }
 
-  private renderLayout(): void {
-    this.rootElement.innerHTML = `
-      <div class="container py-4">
-        <h1 class="h3 mb-3">Recipe Builder</h1>
-
-        <div class="row g-3 align-items-end mb-4">
-          <div class="col-md-4">
-            <label for="recipeName" class="form-label">Recipe Name</label>
-            <input id="recipeName" class="form-control" type="text" placeholder="My Recipe" />
-          </div>
-          <div class="col-md-3">
-            <label for="recipeType" class="form-label">Recipe Type</label>
-            <select id="recipeType" class="form-select">
-              <option value="standard">Standard</option>
-              <option value="vegetarian">Vegetarian</option>
-            </select>
-          </div>
-          <div class="col-md-3">
-            <button id="createRecipeBtn" class="btn btn-primary w-100" type="button">Create Recipe</button>
-          </div>
-        </div>
-
-        <div id="warning" class="alert alert-secondary py-2" role="status"></div>
-
-        <div class="row g-4 mt-1">
-          <div class="col-lg-6">
-            <h2 class="h5">Pantry</h2>
-            <table class="table table-sm table-striped">
-              <thead>
-                <tr><th>Ingredient</th><th>Category</th><th>Grams</th><th></th></tr>
-              </thead>
-              <tbody id="pantryBody"></tbody>
-            </table>
-          </div>
-
-          <div class="col-lg-6">
-            <h2 class="h5">Recipe Items</h2>
-            <table class="table table-sm table-bordered">
-              <thead>
-                <tr><th>Ingredient</th><th>Grams</th><th></th></tr>
-              </thead>
-              <tbody id="recipeBody"></tbody>
-            </table>
-
-            <div class="card p-3">
-              <div><strong>Calories:</strong> <span id="totalCalories">0</span></div>
-              <div><strong>Protein:</strong> <span id="totalProtein">0</span> g</div>
-              <div><strong>Carbs:</strong> <span id="totalCarbs">0</span> g</div>
-              <div><strong>Fat:</strong> <span id="totalFat">0</span> g</div>
-              <div class="mt-2"><strong>Recipe ID:</strong> <span id="recipeId">(none)</span></div>
-            </div>
-
-            <div class="row g-2 mt-2">
-              <div class="col-md-4">
-                <button id="saveRecipeBtn" class="btn btn-success w-100" type="button">Save</button>
-              </div>
-              <div class="col-md-4">
-                <input id="loadRecipeId" class="form-control" type="text" placeholder="recipe id" />
-              </div>
-              <div class="col-md-4">
-                <button id="loadRecipeBtn" class="btn btn-outline-primary w-100" type="button">Load</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
   private renderPantry(): void {
     const pantryBody = document.getElementById('pantryBody') as HTMLTableSectionElement;
     pantryBody.innerHTML = '';
@@ -312,7 +242,7 @@ export class UI {
   }
 
   private showWarning(message: string): void {
-    const warningElement = this.rootElement.querySelector<HTMLDivElement>('#warning');
+    const warningElement = this.rootElement.querySelector<HTMLOutputElement>('#warning');
 
     if (!warningElement) {
       return;
