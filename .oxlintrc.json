@@ -2,12 +2,12 @@
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["eslint", "unicorn", "typescript", "oxc", "import", "jsdoc", "vitest", "promise", "node"],
   "categories": {
-    // "correctness": "deny", // yes
+    "correctness": "deny", // yes
     // "suspicious": "warn", // maybe
     // "pedantic": "warn", // yes, gpt says warn
     // "perf": "deny", // yes
     // "style": "warn", // yes, gpt says warn
-    "restriction": "deny", // never
+    // "restriction": "deny", // never
     // "nursery": "deny" // probably, gpt says allow
   },
   "rules": {
