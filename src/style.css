@@ -15,3 +15,70 @@ body {
 table input[type='number'] {
   min-width: 6.5rem;
 }
+
+.nutrition-label {
+  background: #fff;
+  border: 2px solid #111;
+  color: #111;
+  font-family: Arial, Helvetica, sans-serif;
+  max-width: 360px;
+  margin-inline: auto;
+  padding: 0.65rem;
+}
+
+.nf-title {
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1;
+  border-bottom: 8px solid #111;
+  padding-bottom: 0.2rem;
+  margin-bottom: 0.35rem;
+}
+
+.nf-serving,
+.nf-amount,
+.nf-footnote {
+  font-size: 0.82rem;
+}
+
+.nf-thick-line {
+  border-bottom: 5px solid #111;
+  margin-bottom: 0.3rem;
+  padding-bottom: 0.3rem;
+}
+
+.nf-calories-row {
+  border-bottom: 5px solid #111;
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.nf-dv-header {
+  border-bottom: 1px solid #111;
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-bottom: 0.1rem;
+  text-align: right;
+}
+
+.nf-row {
+  border-bottom: 1px solid #111;
+  display: flex;
+  font-size: 0.85rem;
+  justify-content: space-between;
+  padding: 0.13rem 0;
+}
+
+.nf-thin-line {
+  margin-bottom: 0.3rem;
+}
+
+.nf-footnote {
+  border-top: 3px solid #111;
+  padding-top: 0.25rem;
+}

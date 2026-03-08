@@ -15,7 +15,7 @@ export interface Ingredient {
   id: string;
   name: string;
   category: Category;
-  nutritionPer100g: Nutrition;
+  nPer100g: Nutrition;
 }
 
 export interface RecipeItem {

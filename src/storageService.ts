@@ -22,6 +22,23 @@ export class StorageService {
     return recipeFromStored(storedRecipe);
   }
 
+  async listRecipes(): Promise<StoredRecipe[]> {
+    const allRecipes = await this.readAllRecipes();
+    return Object.values(allRecipes);
+  }
+
+  async deleteRecipe(recipeId: string): Promise<boolean> {
+    const allRecipes = await this.readAllRecipes();
+
+    if (!(recipeId in allRecipes)) {
+      return false;
+    }
+
+    delete allRecipes[recipeId];
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(allRecipes));
+    return true;
+  }
+
   private async readAllRecipes(): Promise<Record<string, StoredRecipe>> {
     return this.getAllRecipes();
   }

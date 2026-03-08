@@ -65,10 +65,10 @@ export class Recipe {
 
     for (const item of this.items) {
       const factor = item.grams / 100;
-      totals.calories += item.ingredient.nutritionPer100g.calories * factor;
-      totals.protein += item.ingredient.nutritionPer100g.protein * factor;
-      totals.carbs += item.ingredient.nutritionPer100g.carbs * factor;
-      totals.fat += item.ingredient.nutritionPer100g.fat * factor;
+      totals.calories += item.ingredient.nPer100g.calories * factor;
+      totals.protein += item.ingredient.nPer100g.protein * factor;
+      totals.carbs += item.ingredient.nPer100g.carbs * factor;
+      totals.fat += item.ingredient.nPer100g.fat * factor;
     }
 
     return totals;

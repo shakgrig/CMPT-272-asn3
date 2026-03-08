@@ -1,7 +1,6 @@
-import type { RecipeKind } from './models';
+import type { RecipeKind, StoredRecipe } from './models';
 import { RecipeService } from './recipeService';
 import { StorageService } from './storageService';
-import { VegetarianRecipe } from './recipe';
 
 export class UI {
   private readonly rootElement: HTMLElement;
@@ -23,9 +22,10 @@ export class UI {
   private bindEvents(): void {
     const createButton = document.getElementById('createRecipeBtn') as HTMLButtonElement;
     const saveButton = document.getElementById('saveRecipeBtn') as HTMLButtonElement;
-    const loadButton = document.getElementById('loadRecipeBtn') as HTMLButtonElement;
+    const openSavedRecipesButton = document.getElementById('openSavedRecipesBtn') as HTMLButtonElement;
     const pantryBody = document.getElementById('pantryBody') as HTMLTableSectionElement;
     const recipeBody = document.getElementById('recipeBody') as HTMLTableSectionElement;
+    const savedRecipesList = document.getElementById('savedRecipesList') as HTMLUListElement;
 
     createButton.addEventListener('click', () => {
       const nameInput = document.getElementById('recipeName') as HTMLInputElement;
@@ -111,8 +111,35 @@ export class UI {
       this.handleSaveRecipe();
     });
 
-    loadButton.addEventListener('click', () => {
-      this.handleLoadRecipe();
+    openSavedRecipesButton.addEventListener('click', () => {
+      this.renderSavedRecipes();
+    });
+
+    savedRecipesList.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+
+      if (!(target instanceof HTMLButtonElement)) {
+        return;
+      }
+
+      const recipeId = target.dataset.recipeId;
+      const action = target.dataset.action;
+
+      if (!recipeId || !action) {
+        return;
+      }
+
+      if (action === 'load') {
+        this.handleLoadRecipe(recipeId);
+      }
+
+      if (action === 'delete') {
+        this.handleDeleteRecipe(recipeId);
+      }
+
+      if (action === 'info') {
+        this.handleRecipeInfo(recipeId);
+      }
     });
   }
 
@@ -128,6 +155,7 @@ export class UI {
       .saveRecipe(recipe)
       .then(() => {
         this.showWarning(`Saved recipe id: ${recipe.id}`);
+        this.renderSavedRecipes();
       })
       .catch((error: unknown) => {
         if (error instanceof Error) {
@@ -139,15 +167,7 @@ export class UI {
       });
   }
 
-  private handleLoadRecipe(): void {
-    const recipeIdInput = document.getElementById('loadRecipeId') as HTMLInputElement;
-    const recipeId = recipeIdInput.value.trim();
-
-    if (!recipeId) {
-      this.showWarning('Enter a recipe id to load.');
-      return;
-    }
-
+  private handleLoadRecipe(recipeId: string): void {
     this.storageService
       .loadRecipe(recipeId)
       .then((loaded) => {
@@ -165,6 +185,157 @@ export class UI {
       });
   }
 
+  private handleDeleteRecipe(recipeId: string): void {
+    this.storageService
+      .deleteRecipe(recipeId)
+      .then((deleted) => {
+        if (!deleted) {
+          this.showWarning(`Recipe ${recipeId} was not found.`);
+          return;
+        }
+
+        this.showWarning(`Deleted recipe: ${recipeId}`);
+        this.renderSavedRecipes();
+      })
+      .catch((error: unknown) => {
+        if (error instanceof Error) {
+          this.showWarning(error.message);
+          return;
+        }
+
+        this.showWarning('Unable to delete recipe.');
+      });
+  }
+
+  private handleRecipeInfo(recipeId: string): void {
+    const modalTitle = document.getElementById('recipeInfoModalLabel') as HTMLHeadingElement | null;
+    const modalBody = document.getElementById('recipeInfoBody') as HTMLDivElement | null;
+
+    if (!modalTitle || !modalBody) {
+      this.showWarning('Recipe info modal is not available.');
+      return;
+    }
+
+    this.storageService
+      .listRecipes()
+      .then((recipes: StoredRecipe[]) => {
+        const recipe = recipes.find((item) => item.id === recipeId);
+
+        if (!recipe) {
+          modalTitle.textContent = 'Recipe Nutrition Facts';
+          modalBody.textContent = 'Recipe not found.';
+          return;
+        }
+
+        let calories = 0;
+        let protein = 0;
+        let carbs = 0;
+        let fat = 0;
+        let totalGrams = 0;
+
+        for (const item of recipe.items) {
+          const factor = item.grams / 100;
+          calories += item.ingredient.nPer100g.calories * factor;
+          protein += item.ingredient.nPer100g.protein * factor;
+          carbs += item.ingredient.nPer100g.carbs * factor;
+          fat += item.ingredient.nPer100g.fat * factor;
+          totalGrams += item.grams;
+        }
+
+        const roundedCalories = Math.round(calories);
+        const roundedProtein = Math.round(protein * 10) / 10;
+        const roundedCarbs = Math.round(carbs * 10) / 10;
+        const roundedFat = Math.round(fat * 10) / 10;
+        const fatPercent = Math.round((fat / 78) * 100);
+        const carbsPercent = Math.round((carbs / 275) * 100);
+        const proteinPercent = Math.round((protein / 50) * 100);
+
+        modalTitle.textContent = `${recipe.name} Nutrition Facts`;
+        modalBody.innerHTML = `
+          <div class="nutrition-label">
+            <div class="nf-title">Nutrition Facts</div>
+            <div class="nf-serving">Recipe: ${recipe.name}</div>
+            <div class="nf-serving">Total recipe weight: ${totalGrams.toFixed(0)} g</div>
+            <div class="nf-serving nf-thick-line">Servings per recipe: 1</div>
+
+            <div class="nf-amount">Amount Per Serving</div>
+            <div class="nf-calories-row">
+              <span>Calories</span>
+              <span>${roundedCalories}</span>
+            </div>
+
+            <div class="nf-dv-header">% Daily Value*</div>
+            <div class="nf-row"><span><strong>Total Fat</strong> ${roundedFat}g</span><span><strong>${fatPercent}%</strong></span></div>
+            <div class="nf-row"><span><strong>Total Carbohydrate</strong> ${roundedCarbs}g</span><span><strong>${carbsPercent}%</strong></span></div>
+            <div class="nf-row nf-thin-line"><span><strong>Protein</strong> ${roundedProtein}g</span><span><strong>${proteinPercent}%</strong></span></div>
+
+            <div class="nf-footnote">* Percent Daily Values are based on a 2,000 calorie diet.</div>
+          </div>
+        `;
+      })
+      .catch((error: unknown) => {
+        if (error instanceof Error) {
+          this.showWarning(error.message);
+          return;
+        }
+
+        this.showWarning('Unable to load recipe info.');
+      });
+  }
+
+  private renderSavedRecipes(): void {
+    const savedRecipesList = document.getElementById('savedRecipesList') as HTMLUListElement;
+
+    this.storageService
+      .listRecipes()
+      .then((recipes) => {
+        savedRecipesList.innerHTML = '';
+
+        if (recipes.length === 0) {
+          const empty = document.createElement('li');
+          empty.className = 'list-group-item text-muted';
+          empty.textContent = 'No saved recipes yet.';
+          savedRecipesList.appendChild(empty);
+          return;
+        }
+
+        for (const recipe of recipes) {
+          const row = document.createElement('li');
+          row.className = 'list-group-item d-flex justify-content-between align-items-start gap-2';
+          row.innerHTML = `
+            <div>
+              <div><strong>${recipe.name}</strong></div>
+              <small class="text-muted">${recipe.kind} • ${recipe.items.length} item(s)</small><br>
+              <small class="text-muted">${recipe.id}</small>
+            </div>
+            <div class="d-flex gap-1">
+              <button class="btn btn-sm btn-primary" type="button" data-action="load" data-recipe-id="${recipe.id}">Load</button>
+              <button
+                class="btn btn-sm btn-outline-secondary"
+                type="button"
+                data-action="info"
+                data-recipe-id="${recipe.id}"
+                data-bs-toggle="modal"
+                data-bs-target="#recipeInfoModal"
+              >
+                Info
+              </button>
+              <button class="btn btn-sm btn-outline-danger" type="button" data-action="delete" data-recipe-id="${recipe.id}">Delete</button>
+            </div>
+          `;
+          savedRecipesList.appendChild(row);
+        }
+      })
+      .catch((error: unknown) => {
+        if (error instanceof Error) {
+          this.showWarning(error.message);
+          return;
+        }
+
+        this.showWarning('Unable to read saved recipes.');
+      });
+  }
+
   private renderPantry(): void {
     const pantryBody = document.getElementById('pantryBody') as HTMLTableSectionElement;
     pantryBody.innerHTML = '';
@@ -176,6 +347,10 @@ export class UI {
       row.innerHTML = `
         <td>${ingredient.name}</td>
         <td>${ingredient.category}</td>
+        <td>${ingredient.nPer100g.calories}</td>
+        <td>${ingredient.nPer100g.protein}</td>
+        <td>${ingredient.nPer100g.carbs}</td>
+        <td>${ingredient.nPer100g.fat}</td>
         <td>
           <input id="grams-${ingredient.id}" class="form-control form-control-sm" type="number" min="1" value="100" />
         </td>
@@ -209,10 +384,6 @@ export class UI {
     }
 
     recipeId.textContent = recipe.id;
-
-    if (recipe instanceof VegetarianRecipe) {
-      this.showWarning(recipe.getRuleDescription());
-    }
 
     for (const item of recipe.getItems()) {
       const row = document.createElement('tr');
